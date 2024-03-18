@@ -181,6 +181,30 @@ public:
 		}
 		l.tail = NULL;
 	}
+	void getMaxAndMin(int *max, int *min) {
+		Node* head = l.head->next;
+		while (head) {
+			if (head->data > *max)
+				*max = head->data;
+			if (head->data < *min)
+				*min = head->data;
+			head = head->next;
+		}
+	}
+	void getEvenNumberMaxAndMin(int *max, int *min, int *status) {
+		Node* temp = l.head;
+		while ((temp->data & 1) && temp->next != NULL)
+			temp = temp->next;
+		if (temp->next == NULL)
+			*status = -1;
+		else
+		{
+			Node* head = l.head;
+			*max = *min = temp->data;
+			getMaxAndMin(max, min);
+			*status = 1;
+		}
+	}
 };
 
 void menu();
@@ -206,6 +230,14 @@ void main(){
 		case 8: l.countX(); break;
 		case 9: l.total(); break;
 		case 10: l.printLinkedList(); break;
+		case 11: l.getEvenNumberMaxAndMin(&max, &min, &status);
+			if (status != -1) {
+				printf("Max: %d\n", max);
+				printf("Min: %d\n", min);
+			}
+			else
+				printf("Khong co so chan trong dslk\n");
+			break;
 		default: printf("Khong co lua chon nay!\n"); break;
 		}
 		system("pause");
