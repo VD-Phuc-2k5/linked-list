@@ -1,265 +1,304 @@
-#include <stdio.h>
+#include <iostream>
 #include <stdlib.h>
+#include <string.h>
 
-class linked_list {
-private:
-	int len, temp;
-	struct Node {
-		int data;
-		Node* next;
-	};
-	struct Slist {
-		Node* head;
-		Node* tail;
-	} l;
+struct Node
+{
+	int data;
+	Node* next;
+};
+struct List 
+{
+	Node *head, *tail;
+};
+
+class linked_list 
+{
+private: int size;
 public:
-	// initialize function
-	void initialize() {
+	linked_list(int len) {size = len;}
+	void swap(int &a, int &b)
+	{
+		int temp = a;
+		a = b;
+		b = temp;
+	}
+	// check
+	bool isEmpty(List l) {return l.head == NULL;}
+	//input
+	Node* inputNode()
+	{
+		int temp;
+		std::cin >> temp;
+		return createNode(temp);
+	}
+	//output
+	void printNode(Node* node) {std::cout << node->data << ' ';}
+	void printLinkedList(List l)
+	{
+		if (isEmpty(l)) 
+			std::cout << "Linked List is Empty!\n";
+		else
+		{
+			while(l.head)
+			{
+				printNode(l.head);
+				l.head = l.head->next;
+			}
+		}
+	}
+	// create
+	List creatList()
+	{
+		List l;
 		l.head = NULL;
 		l.tail = NULL;
+		return l;
 	}
-	bool isEmpty(Slist l) {
-		return l.head == NULL ? true : false;
-	}
-	bool isFull(Node* p) {
-		return p == NULL ? true : false;
-	}
-	bool isExist() {
-		return isEmpty(l) == 0 ? true : false; 
-	}
-	// operation on linked list
-	Node* createNode(int data) {
+	Node* createNode(int value)
+	{
 		Node* node = new Node;
-		if (isFull(node)) exit(1);
-		node->data = data;
+		if (node == NULL) return NULL;
+		node->data = value;
 		node->next = NULL;
 		return node;
 	}
-	void createLinkedList() {
-		if (isExist()) deleteLinkdedList();
-		printf("Nhap so luong phan tu: "); scanf_s("%d", &len);
-		int n = len; 
-		while (n) {
-			scanf_s("%d", &temp);
-			Node* node = createNode(temp);
-			if (isEmpty(l)) {
-				l.head = node;
-				l.tail = node;
-			}		
-			l.tail->next = node;
+	void createLinkedList(List &l)
+	{
+		int length = size;
+		while(length)
+		{
+			Node* temp = inputNode();
+			if (isEmpty(l))
+				l.head = temp;
+			else
+				l.tail->next = temp;
+			l.tail = temp;
+			--length;
+		}
+	}
+	// insert
+	void insertHead(List &l, int value)
+	{
+		Node* node = createNode(value);
+		if (isEmpty(l)) 
 			l.tail = node;
-			--n;
-		}
-		printf("Notification: Danh sach lien ket da duoc tao!\n");
-	}
-	void printLinkedList() {
-		if (!isExist()) {printf("Error: Danh sach chua duoc tao!\n"); return;}
-		printf("linked list: ");
-		Node* head = l.head;
-		while (head) {
-			printf("%d ", head->data);
-			head = head->next;
-		}
-	}
-	// sort function
-	void swap(Node* curr, Node* next) {
-		int temp = curr->data;
-		curr->data = next->data;
-		next->data = temp;
-	}
-	void Ascending() {
-		if (!isExist()) {printf("Error: Danh sach chua duoc tao!\n"); return;}
-		bool sorted = false;
-		while (!sorted) {
-			sorted = true;
-			Node* head = l.head;
-			while (head->next) {
-				if (head->data > head->next->data) {
-					sorted = false;
-					swap(head, head->next);
-				}
-				head = head->next;
-			}
-		}
-		printf("Notification: Da sap sep xong!\n");
-	}
-	void Decending() {
-		if (!isExist()) {printf("Error: Danh sach chua duoc tao!\n"); return;}
-		bool sorted = false;
-		while (!sorted) {
-			sorted = true;
-			Node* head = l.head;
-			while (head->next) {
-				if (head->data < head->next->data) {
-					sorted = false;
-					swap(head, head->next);
-				}
-				head = head->next;
-			}
-		}
-		printf("Notification: Da sap sep xong!\n");
-	}
-	// odd and even
-	void isEven() {
-		if (!isExist()) {printf("Error: Danh sach chua duoc tao!\n"); return;}
-		Node* head = l.head;
-		printf("Phan tu chan trong danh sach: ");
-		while(head) {
-			if (!(head->data & 1))
-				printf("%d ", head->data); 
-			head = head->next;
-		}
-	}
-	void isOdd() {
-		if (!isExist()) {printf("Error: Danh sach chua duoc tao!\n"); return;}
-		Node* head = l.head;
-		printf("Phan tu le trong danh sach: ");
-		while(head) {
-			if (head->data & 1)
-				printf("%d ", head->data); 
-			head = head->next;
-		}
-	}
-	// searching
-	void findX() {
-		if (!isExist()) {printf("Error: Danh sach chua duoc tao!\n"); return;}
-		Node* head = l.head;
-		bool flag = false;
-		int x, index = 1;
-		printf("Nhap gia tri can tim: ");
-		scanf_s("%d", &x);
-		while(head) {
-			if (head->data == x) {
-				flag = true;
-				break;
-			}
-			++index;
-			head = head->next;
-		}
-		if (flag)
-			printf("%d nam tai nut %d cua danh sach lien ket.\n", x, index);
 		else
-			printf("Khong tim thay x trong danh sach.\n");
+			node->next = l.head;
+		l.head = node;
 	}
-	// counter
-	void countLen() {
-		if (!isExist()) {printf("Error: Danh sach chua duoc tao!\n"); return;}
-		printf("So phan tu cua danh sach lien ket la: %d\n", len);
+	void insertTail(List &l, int value)
+	{
+		Node* node = createNode(value);
+		if (isEmpty(l)) 
+			l.head = node;
+		else
+			l.tail->next = node;
+		l.tail = node;
 	}
-	void countX() {
-		if (!isExist()) {printf("Error: Danh sach chua duoc tao!\n"); return;}
-		int count = 0, x;
-		printf("Nhap x: "); 
-		scanf_s("%d", &x);
-		Node* head = l.head;
-		while (head) {
-			if (head->data == x)
-				++count;
-			head = head->next;
-		}
-		printf("Tren danh sach lien ket co %d gia tri %d\n", count, x);
-	}
-	// sum 
-	void total() {
-		if (!isExist()) {printf("Error: Danh sach chua duoc tao!\n"); return;}
-		int total = 0;
-		Node* head = l.head;
-		while(head) {
-			total += head->data;
-			head = head->next;
-		}
-		printf("Tong cac phan tu cua danh sach lien ket la: %d\n", total);
-	}
-	// remove
-	void deleteLinkdedList() {
-		int n = len;
-		while (n) {
-			Node* temp = l.head;
-			l.head = l.head->next;
-			delete temp;
-			--n;
-		}
-		l.tail = NULL;
-	}
-	void getMaxAndMin(int *max, int *min) {
-		Node* head = l.head->next;
-		while (head) {
-			if (head->data > *max)
-				*max = head->data;
-			if (head->data < *min)
-				*min = head->data;
-			head = head->next;
-		}
-	}
-	void getEvenNumberMaxAndMin(int *max, int *min, int *status) {
-		Node* temp = l.head;
-		while ((temp->data & 1) && temp->next != NULL)
-			temp = temp->next;
-		if (temp->next == NULL)
-			*status = -1;
+	void insertAfter(List &l, Node* current, int value)
+	{
+		Node* node = createNode(value);
+		if (current == NULL || isEmpty(l)) return;
+		if (current->next = NULL) insertTail(l, value);
 		else
 		{
-			Node* head = l.head;
-			*max = *min = temp->data;
-			getMaxAndMin(max, min);
-			*status = 1;
+			node->next = current->next;
+			current->next = node;
+		}
+	}
+	// delete
+	int deleteHead(List &l)
+	{
+		if (isEmpty(l)) return NULL;
+		Node* temp = l.head;
+		l.head = l.head->next;
+		int value = temp->data;
+		delete temp;
+		return value;
+	}
+	int deleteAfter(List &l, Node* current)
+	{
+		if (isEmpty(l) || current == NULL) return NULL;
+		Node* next_next = current->next->next;
+		int value = current->next->data;
+		delete current->next;
+		current->next = next_next;
+		return value;
+	}
+	// sort
+	void sort(List l, char type)
+	{
+		bool sorted = false, compare;
+		if(isEmpty(l)) return;
+		while (!sorted)
+		{
+			sorted = true;
+			Node* current = l.head;
+			while (current->next)
+			{
+				if (type == 'a')
+					compare = current->data > current->next->data;
+				else if (type == 'd')
+					compare = current->data < current->next->data;
+				else return;
+
+				if (compare)
+				{
+					sorted = false;
+					swap(current->data, current->next->data);
+				}
+				current = current->next;
+			}
+		}
+	}
+	// EvenOrOddNumber()
+	void EvenOrOddNumber(List l, char type)
+	{
+		if (isEmpty(l)) return;
+		bool condition;
+		while(l.head)
+		{
+			switch (type)
+			{
+				case 'e': condition = !(l.head->data & 1); break;
+				case 'o': condition = l.head->data & 1; break;
+				default: return;
+			}
+			condition ? printNode(l.head) : std::cout << "";
+			l.head = l.head->next;
+		}
+		std::cout << std::endl;
+	}
+	// search
+	int findX(List l, int x)
+	{
+		if(isEmpty(l)) return -1;
+		int index = 1;
+		while (l.head)
+		{
+			if (l.head->data == x)
+				return index;
+			++index;
+			l.head = l.head->next;
+		}
+		return -1;
+	}
+	int findMaxOrMin(List l, char *type)
+	{
+		if (isEmpty(l)) return -1;
+		int result = l.head->data;
+		while(l.head)
+		{
+			if (!strcmp(type, "max"))
+				result = l.head->data > result ? l.head->data : result;
+			if (!strcmp(type, "min"))
+				result = l.head->data < result ? l.head->data : result;
+			l.head = l.head->next;
+		}
+		return result;
+	}
+	int findMaxOrMinEvenNumber(List l, char* type)
+	{
+		if (strcmp(type, "max") && strcmp(type, "min") && isEmpty(l)) return 0;
+		bool condition;
+		while (l.head->data & 1)
+			l.head = l.head->next;
+		if (l.head == NULL) return -1;
+		int result = l.head->data;
+		while(l.head)
+		{
+			if (!strcmp(type, "max")) 
+				condition = l.head->data > result && !(l.head->data & 1);
+			if (!strcmp(type, "min")) 
+				condition = l.head->data < result && !(l.head->data & 1);
+			if(condition)
+				result = l.head->data;
+			l.head = l.head->next;
+		}
+		return result;
+	}
+	// counter
+	int getSize(List l) 
+	{
+		int count = 0;
+		while (l.head)
+		{
+			++count;
+			l.head = l.head->next;
+		}
+		return count;
+	}
+	int counterX(List l, int x)
+	{
+		int count = 0;
+		while (l.head)
+		{
+			if (l.head->data == x)
+				++count;
+			l.head = l.head->next;
+		}
+		return count;
+	}
+	int greaterAfter(List l)
+	{
+		int count = 0;
+		while (l.head->next)
+		{
+			if (l.head->data > l.head->next->data)
+				++count;
+			l.head = l.head->next;
+		}
+		return count;
+	}
+	// sum
+	int total(List l)
+	{
+		int total = 0;
+		while (l.head)
+		{
+			total += l.head->data;
+			l.head = l.head->next;
+		}
+		return total;
+	}
+	// match sl2 after x in sl1
+	bool match(int x, List &l1, List l2)
+	{
+		Node* temp_node = l1.head;
+		while(temp_node->data != x && temp_node->next != NULL)
+			temp_node = temp_node->next;
+		if (temp_node->next == NULL && temp_node->data != x)
+			return false; // ko tim thay x
+		else
+		{
+			l2.tail->next = temp_node->next;
+			temp_node->next = l2.head;
+			return true;
 		}
 	}
 };
 
-void menu();
-
-void main(){
-	linked_list l;
-	l.initialize();
-	int choosen;
-	bool flag = true; 
-	while (flag) {
-		menu();
-		printf("lua chon: ");
-		scanf_s("%d", &choosen);
-		switch (choosen) {
-		case 0: flag = false; break;
-		case 1: l.createLinkedList(); break;
-		case 2: l.Ascending(); break;
-		case 3: l.Decending(); break;
-		case 4: l.isEven(); break;
-		case 5: l.isOdd(); break;
-		case 6: l.findX(); break;
-		case 7: l.countLen(); break;
-		case 8: l.countX(); break;
-		case 9: l.total(); break;
-		case 10: l.printLinkedList(); break;
-		case 11: l.getEvenNumberMaxAndMin(&max, &min, &status);
-			if (status != -1) {
-				printf("Max: %d\n", max);
-				printf("Min: %d\n", min);
-			}
-			else
-				printf("Khong co so chan trong dslk\n");
-			break;
-		default: printf("Khong co lua chon nay!\n"); break;
-		}
-		system("pause");
-		system("cls");
-	}
-	system("pause");
-}
-
-void menu()
+int main()
 {
-	printf("menu:\n");
-	printf("**********************************************************\n");
-	printf("* 1 . Tao danh sach lien ket                             *\n");
-	printf("* 2 . Sap xep danh sach tang dan                         *\n");
-	printf("* 3 . Sap xep danh sach giam dan                         *\n");
-	printf("* 4 . Xuat cac phan tu chan trong danh sach lien ket     *\n");
-	printf("* 5 . Xuat cac phan tu le trong danh sach lien ket       *\n");
-	printf("* 6 . Tim kiem x tren danh sach lien ket                 *\n");
-	printf("* 7 . Dem so phan tu cua danh sach lien ket              *\n");
-	printf("* 8 . Dem tren danh sach lien ket co bao nhieu gia tri x *\n");
-	printf("* 9 . Tinh tong cac phan tu cua danh sach lien ket       *\n");
-	printf("* 10. Xuat danh sach lien ket                            *\n");
-	printf("* 0. Thoat                                               *\n");
-	printf("**********************************************************\n");
+	linked_list dslk(5);
+	List list1 = dslk.creatList();
+	dslk.createLinkedList(list1);
+	//List list2 = dslk.creatList();
+	//dslk.createLinkedList(list2);
+	//dslk.insertAfter(list1, list1.head, 10);
+	//dslk.deleteHead(list1);
+	//dslk.sort(list1, 'd');
+	//dslk.EvenOrOddNumber(list1, 'e');
+	//dslk.findX(list1, 10);
+	//dslk.getSize(list1);
+	//dslk.counterX(list1, 1);
+	//dslk.total(list1);
+	//dslk.greaterAfter(list1);
+	//dslk.findMaxOrMin(list1, "min");
+	std::cout << dslk.findMaxOrMinEvenNumber(list1, "min") << std::endl;
+	//dslk.match(4, list1, list2);
+	//dslk.printLinkedList(list1);
+	system("pause>0");
+	return 0;
 }
