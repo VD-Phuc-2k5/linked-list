@@ -378,7 +378,6 @@ int main()
 	//dslk.deleteMaxOrMin(list1, "min");
 	//dslk.isAscendingOrDescending(list1, 'd');
 	//dslk.findLongestAscendingSubNode(list1) - fixing;
-	dslk.merge_evenIncrease_oddDecrease(list1, list2);
 	dslk.printLinkedList(list1);
 	system("pause>0");
 	return 0;
