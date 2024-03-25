@@ -25,6 +25,19 @@ public:
 	}
 	// check
 	bool isEmpty(List l) {return l.head == NULL;}
+	bool isAscendingOrDescending(List l, char type)
+	{
+		if(isEmpty(l)) return false;
+		while (l.head->next)
+		{
+			if (type == 'a' && l.head->data > l.head->next->data)
+				return false;
+			if (type == 'd' && l.head->data < l.head->next->data)
+				return false;
+			l.head = l.head->next;
+		}
+		return true;
+	}
 	//input
 	Node* inputNode()
 	{
@@ -126,6 +139,22 @@ public:
 		current->next = next_next;
 		return value;
 	}
+	void deleteMaxOrMin(List &l, char* type)
+	{
+		if (isEmpty(l)) return;
+		Node *next_next, *current = l.head;
+		if (!strcmp(type, "max"))
+			int value = findMaxOrMin(l, type);
+		int value = findMaxOrMin(l, type);
+		while (current->next)
+		{
+			if(current->next->data == value)
+				deleteAfter(l, current);
+			else
+				current = current->next;
+		}
+		if (l.head->data == value) deleteHead(l);
+	}
 	// sort
 	void sort(List l, char type)
 	{
@@ -200,7 +229,7 @@ public:
 	}
 	int findMaxOrMinEvenNumber(List l, char* type)
 	{
-		if (strcmp(type, "max") && strcmp(type, "min") && isEmpty(l)) return 0;
+		if (strcmp(type, "max") && strcmp(type, "min") && isEmpty(l)) return -1;
 		bool condition;
 		while (l.head->data & 1)
 			l.head = l.head->next;
@@ -217,6 +246,53 @@ public:
 			l.head = l.head->next;
 		}
 		return result;
+	}
+	int findMaxOrMinOddNumber(List l, char* type)
+	{
+		if (strcmp(type, "max") && strcmp(type, "min") && isEmpty(l)) return 0;
+		bool condition;
+		while (!(l.head->data & 1))
+			l.head = l.head->next;
+		if (l.head == NULL) return 0;
+		int result = l.head->data;
+		while(l.head)
+		{
+			if (!strcmp(type, "max")) 
+				condition = l.head->data > result && l.head->data & 1;
+			if (!strcmp(type, "min")) 
+				condition = l.head->data < result && l.head->data & 1;
+			if(condition)
+				result = l.head->data;
+			l.head = l.head->next;
+		}
+		return result;
+	}
+	void findLongestAscendingSubNode(List l)
+	{
+		// fixing ...
+		if (isEmpty(l)) return;
+		int current_length = 1, max_length = 1;
+		Node* current, *start_longest_subnode;
+		current = start_longest_subnode = l.head;
+
+		while (current->next) {
+			if (current->data < current->next->data) {
+				++current_length;
+				if (current_length > max_length) {
+					max_length = current_length;
+					start_longest_subnode = current;
+				}
+			} 
+			else
+				current_length = 1;
+			current = current->next;
+		}
+		if (max_length == 1) return;
+		while(max_length--) {
+			printf("%d ", start_longest_subnode->data);
+			start_longest_subnode = start_longest_subnode->next;
+		}
+		printf("\n");
 	}
 	// counter
 	int getSize(List l) 
@@ -284,8 +360,8 @@ int main()
 	linked_list dslk(5);
 	List list1 = dslk.creatList();
 	dslk.createLinkedList(list1);
-	//List list2 = dslk.creatList();
-	//dslk.createLinkedList(list2);
+	List list2 = dslk.creatList();
+	dslk.createLinkedList(list2);
 	//dslk.insertAfter(list1, list1.head, 10);
 	//dslk.deleteHead(list1);
 	//dslk.sort(list1, 'd');
@@ -296,9 +372,14 @@ int main()
 	//dslk.total(list1);
 	//dslk.greaterAfter(list1);
 	//dslk.findMaxOrMin(list1, "min");
-	std::cout << dslk.findMaxOrMinEvenNumber(list1, "min") << std::endl;
+	//dslk.findMaxOrMinEvenNumber(list1, "min");
 	//dslk.match(4, list1, list2);
-	//dslk.printLinkedList(list1);
+	//dslk.findMaxOrMinOddNumber(list1, "min");
+	//dslk.deleteMaxOrMin(list1, "min");
+	//dslk.isAscendingOrDescending(list1, 'd');
+	//dslk.findLongestAscendingSubNode(list1) - fixing;
+	dslk.merge_evenIncrease_oddDecrease(list1, list2);
+	dslk.printLinkedList(list1);
 	system("pause>0");
 	return 0;
 }
